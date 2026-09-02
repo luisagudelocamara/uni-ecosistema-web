@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ecosistema — fomento audiovisual en Cundinamarca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Estilo: "The Cinematic Discovery Language" (proyecto Stitch de Luis, 2026-09-01).
+   Fondo negro profundo, capas tonales sin bordes, neon magenta como acento, cian para lo bueno,
+   Space Grotesk en titulares e Inter en el cuerpo, todo redondeado. Sin fuentes web, cae al sistema. */
+:root{--bg:#131313;--s0:#0e0e0e;--s1:#1b1b1b;--s2:#1f1f1f;--s3:#2a2a2a;--s4:#353535;
+ --tx:#e2e2e2;--mut:#e5bcc4;--mut2:#ac878f;--ghost:rgba(92,63,69,.28);
+ --p:#ffb1c3;--pc:#ff4b89;--onp:#fff;--t:#00dbe9;--err:#ffb4ab;--errc:#93000a;
+ --ok:#00dbe9;--warn:#ffb4ab;
+ --disp:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+ --body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 var(--body)}
+header{padding:30px 30px 14px}
+h1{margin:0;font:700 30px/1.1 var(--disp);letter-spacing:-.4px;color:var(--tx)}
+h1::before{content:"";display:inline-block;width:10px;height:26px;border-radius:9999px;margin-right:12px;vertical-align:-3px;
+ background:linear-gradient(135deg,var(--p),var(--pc));box-shadow:0 0 18px rgba(255,75,137,.35)}
+.sub{color:var(--mut);font-size:13px;margin-top:8px}
+.sub b{color:var(--tx)}
+.kpis{display:flex;gap:12px;flex-wrap:wrap;padding:10px 30px 6px}
+.kpi{background:var(--s2);border-radius:20px;padding:14px 20px 12px;min-width:132px}
+.kpi b{display:block;font:700 28px/1.05 var(--disp);color:var(--tx)}
+.kpi span{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px}
+.barra{display:flex;gap:8px;flex-wrap:wrap;padding:14px 30px;align-items:center}
+.lg{cursor:pointer;background:rgba(53,53,53,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+ border:1px solid var(--ghost);border-radius:9999px;padding:7px 14px;font:500 12px/1.3 var(--body);color:var(--tx)}
+.lg:hover{background:rgba(74,73,73,.7)}
+.lg.off{opacity:.32}
+.lg.primario{background:linear-gradient(135deg,var(--p),var(--pc));color:var(--onp);border:none;font-weight:600;
+ box-shadow:0 0 22px rgba(255,75,137,.28)}
+.lg:disabled{opacity:.35;cursor:default;box-shadow:none}
+.lg.peligro{color:var(--err);border-color:rgba(255,180,171,.3)}
+.lg.rojo{background:var(--errc);color:#ffdad6;border:none}
+.sep{width:1px;height:22px;background:var(--ghost);margin:0 4px}
+#estado{margin-left:auto;font-size:12px;color:var(--mut)}
+#estado.ok{color:var(--ok)} #estado.warn{color:var(--warn)}
+.lienzo{display:flex;gap:18px;align-items:flex-start;padding:6px 30px 30px}
+.wrap{overflow:auto;flex:1 1 auto;min-width:0;background:var(--s1);border-radius:28px;padding:10px}
+svg{display:block;margin:0 auto}
+.panel{flex:0 0 370px;position:sticky;top:14px;background:var(--s3);border:none;
+ border-radius:28px;padding:20px 22px;min-height:230px;font-size:13px;max-height:calc(100vh - 28px);overflow:auto}
+.panel h3{margin:0 0 4px;font:700 17px/1.25 var(--disp);color:var(--tx)}
+.panel h4{margin:18px 0 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--mut)}
+.panel .ruta{color:var(--mut);font-size:12px;margin-bottom:9px}
+.panel p{margin:9px 0;line-height:1.45}
+.panel p.pista,.panel .pista{color:var(--mut2);font-size:11.5px;font-style:italic}
+.panel dl{margin:9px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px}
+.panel dt{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);padding-top:2px}
+.panel dd{margin:0;line-height:1.45}
+.panel dd.vacio{color:var(--mut2);font-style:italic}
+.panel ul{margin:5px 0 0;padding-left:17px}
+.panel li{margin-bottom:3px;line-height:1.45}
+.panel li.vacio{list-style:none;margin-left:-17px;color:var(--mut2);font-style:italic}
+.panel .idle{color:var(--mut);line-height:1.55}
+.panel .idle b{color:var(--tx)}
+.panel textarea,.panel input[type=text],.panel select{width:100%;font:inherit;font-size:12.5px;border:1px solid var(--ghost);
+ border-radius:14px;padding:8px 11px;background:var(--s0);color:var(--tx)}
+.panel select option{background:var(--s3)}
+.panel textarea:focus,.panel input[type=text]:focus,.panel select:focus{outline:none;border-color:var(--pc);box-shadow:0 0 0 3px rgba(255,75,137,.18)}
+.panel textarea{resize:vertical}
+.panel label{font-size:12px;margin-right:6px;white-space:nowrap}
+.panel input[type=radio],.panel input[type=checkbox]{accent-color:var(--pc)}
+.panel .cab{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.panel .acc{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.panel .sv{color:var(--warn);font-size:11px}
+.panel .pend{color:var(--warn);font-size:11px}
+.panel a{color:var(--p);text-decoration:none}
+.panel a:hover{text-decoration:underline}
+.nodo.pend circle,.nodo.pend rect{stroke:var(--t);stroke-width:2.6}
+.nodo.sel circle,.nodo.sel rect{stroke:var(--pc);stroke-width:3.2;filter:drop-shadow(0 0 6px rgba(255,75,137,.7))}
+.rel,.nodo{cursor:pointer}
+.nodo:hover circle,.nodo:hover rect{stroke-width:2.6}
+.rel:hover{stroke-width:5}
+.etq.gris{fill:#8f8f8f}
+.rot{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:1.6px}
+.centro{font-family:var(--disp);font-size:16px;font-weight:700;letter-spacing:2px;fill:var(--tx)}
+.centro2{font-size:10.5px;fill:var(--mut);letter-spacing:.4px}
+.etq{font-size:10px;fill:#d6d6d6}
+.rel{cursor:help}
+.oculto{display:none}
+body.editor .nodo{cursor:grab} body.editor .nodo.arr{cursor:grabbing}
+.lg.publicar{border-color:rgba(0,219,233,.35);color:var(--t)}
+.lg.publicar:not(:disabled):hover{background:rgba(0,219,233,.12)}
+.pub{font-size:12px;color:var(--mut);margin-left:auto}
+.pub b{color:var(--t)}
+body.publico #guardar,body.publico #descartar,body.publico #nuevoActor,body.publico #publicar,body.publico #sepEditor,body.publico #estado{display:none}
+footer{margin:0 30px 30px;padding:18px 22px;color:var(--mut);font-size:12px;background:var(--s1);border-radius:22px;max-width:940px}
+footer b{color:var(--tx)}
+code{background:var(--s4);color:var(--tx);padding:1px 6px;border-radius:6px;font-size:11.5px}
+</style></head><body>
+<header>
+<h1>Ecosistema del fomento audiovisual en Cundinamarca</h1>
+<div class="sub">Proyección de <code>tesis/ecosistema/</code> · generada, no dibujada a mano · <b>vista de actores</b>: los flujos entre ellos no se dibujan en esta versión</div>
+</header>
+<div class="kpis">
+<div class="kpi"><b>20</b><span>actores</span></div>
+<div class="kpi"><b>11</b><span>relaciones</span></div>
+<div class="kpi"><b>4</b><span>vacíos con evidencia</span></div>
+<div class="kpi"><b>17</b><span>sin nombre y apellido</span></div>
+<div class="kpi"><b>2</b><span>relaciones sin verificar</span></div>
+<div class="kpi"><b>7</b><span>actores por identificar</span></div>
+</div>
+<div class="barra">
+<button class="lg" id="soloCund">Solo Cundinamarca</button>
+
+<button class="lg" id="reset">Ver todo</button>
+<span class="sep" id="sepEditor"></span>
+<button class="lg" id="nuevoActor" disabled>+ Actor</button>
+<button class="lg primario" id="guardar" disabled>Guardar</button>
+<button class="lg" id="descartar" disabled>Descartar cambios</button>
+<button class="lg publicar" id="publicar" disabled title="Exporta el mapa en solo lectura al repo web y lo publica">Publicar</button>
+<span id="estado"></span><span class="pub">Versión publicada · <b>01-09-2026 19:12</b></span></div>
+<div class="lienzo">
+<div class="wrap"><svg width="1080" height="940" viewBox="0 0 1080 940"><circle class="esfera" data-esfera="patrimonio" cx="540.0" cy="280.0" r="210" fill="#d94f5c" fill-opacity="0.22" stroke="#d94f5c" stroke-opacity="0.65"/><text class="rot" x="540.0" y="157.6" text-anchor="middle" fill="#d94f5c">PATRIMONIO CULTURAL</text><circle class="esfera" data-esfera="publico" cx="701.7" cy="397.5" r="210" fill="#5b6bbf" fill-opacity="0.22" stroke="#5b6bbf" stroke-opacity="0.65"/><text class="rot" x="818.1" y="359.6" text-anchor="middle" fill="#5b6bbf">SECTOR PUBLICO</text><circle class="esfera" data-esfera="necesidades" cx="639.9" cy="587.5" r="210" fill="#4da37a" fill-opacity="0.22" stroke="#4da37a" stroke-opacity="0.65"/><text class="rot" x="711.9" y="686.6" text-anchor="middle" fill="#4da37a">NECESIDADES SOCIALES</text><circle class="esfera" data-esfera="privado" cx="440.1" cy="587.5" r="210" fill="#e08a3c" fill-opacity="0.22" stroke="#e08a3c" stroke-opacity="0.65"/><text class="rot" x="368.1" y="686.6" text-anchor="middle" fill="#e08a3c">SECTOR PRIVADO</text><circle class="esfera" data-esfera="tercero" cx="378.3" cy="397.5" r="210" fill="#8d7a63" fill-opacity="0.22" stroke="#8d7a63" stroke-opacity="0.65"/><text class="rot" x="261.9" y="359.6" text-anchor="middle" fill="#8d7a63">TERCER SECTOR</text><text class="centro" x="540" y="444" text-anchor="middle">ECOSISTEMA</text><text class="centro2" x="540" y="464" text-anchor="middle">fomento audiovisual · Cundinamarca</text><g class="nodo" data-cod="A-001" data-x="570.9" data-y="492.5" data-territorio="nacional" data-cat="1" data-info="&lt;h3&gt;A-001 · Proimágenes Colombia&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado, publico&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;1&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;nacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;Ley 1556 de 2012&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;cumple el rol de **articulador, administrador financiero y promotor principal** del ecosistema audiovisual en el país. Como entidad mixta sin ánimo de lucro, funciona como el puente que conecta al sector público con la empresa privada y los creadores independientes.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (4)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-016&lt;/b&gt; alta — Financiación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-017&lt;/b&gt; alta — Financiación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-018&lt;/b&gt; media — Generación de conocimiento&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-019&lt;/b&gt; media — Generación de conocimiento&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="570.9" cy="492.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="570.9" y="516.5" text-anchor="middle">Proimágenes Colombia</text></g><g class="nodo" data-cod="A-002" data-x="701.7" data-y="317.5" data-territorio="nacional" data-cat="1" data-info="&lt;h3&gt;A-002 · CPFC — Comisión Fílmica Colombiana&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;publico&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;1&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;nacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;Ley 1556 de 2012&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;**puente institucional y operativo fundamental** entre la industria audiovisual global y el territorio local. Su papel principal en el ecosistema es **dinamizar la economía, simplificar la burocracia y visibilizar los recursos locales** para convertir a una ciudad o país en un destino atractivo de rodaje.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (9)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-001&lt;/b&gt; ⊘ ausente — Cooperación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-003&lt;/b&gt; ⊘ ausente — Cooperación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-005&lt;/b&gt; ⊘ ausente — Circulación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-006&lt;/b&gt; ⊘ ausente — Generación de conocimiento&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-007&lt;/b&gt; media — Formación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-008&lt;/b&gt; media — Formación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-009&lt;/b&gt; media — Formación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-010&lt;/b&gt; media — Formación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-012&lt;/b&gt; baja — Cooperación&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="701.7" cy="317.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="701.7" y="341.5" text-anchor="middle">CPFC</text></g><g class="nodo" data-cod="A-003" data-x="771.0" data-y="357.5" data-territorio="nacional" data-cat="2" data-info="&lt;h3&gt;A-003 · Ministerio de Cultura&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;publico&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;2&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;nacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;Ley 1556 de 2012&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;**Ente rector y principal articulador del ecosistema cultural y creativo** del país. Su rol fundamental consiste en formular políticas públicas, diseñar mecanismos de financiación y garantizar los derechos culturales en los territorios.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (1)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-013&lt;/b&gt; media — Cooperación&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="771.0" cy="357.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="771.0" y="381.5" text-anchor="middle">Ministerio de Cultura</text></g><g class="nodo" data-cod="A-004" data-x="771.0" data-y="437.5" data-territorio="cundinamarca" data-cat="2" data-info="&lt;h3&gt;A-004 · Gobernación de Cundinamarca&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;publico&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;2&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (7)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-001&lt;/b&gt; ⊘ ausente — Cooperación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-002&lt;/b&gt; ⊘ ausente — Producción&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-003&lt;/b&gt; ⊘ ausente — Cooperación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-004&lt;/b&gt; ⊘ ausente — Circulación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-005&lt;/b&gt; ⊘ ausente — Circulación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-006&lt;/b&gt; ⊘ ausente — Generación de conocimiento&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-011&lt;/b&gt; baja — Formación&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="771.0" cy="437.5" r="9.5" stroke="#ff4b89" stroke-width="1.4" fill="#ffb1c3"/><text class="etq" x="771.0" y="461.5" text-anchor="middle">Gobernación de Cundina…</text></g><g class="nodo" data-cod="A-009" data-x="440.1" data-y="489.5" data-territorio="bogota" data-cat="3" data-info="&lt;h3&gt;A-009 · TIS Studios&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;3&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;bogota&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="440.1" cy="489.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="440.1" y="513.5" text-anchor="middle">TIS Studios</text></g><g class="nodo" data-cod="A-010" data-x="509.4" data-y="518.2" data-territorio="cundinamarca" data-cat="3" data-info="&lt;h3&gt;A-010 · Cámara de Comercio (aliado local en Fusagasugá)&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;3&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (1)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-012&lt;/b&gt; baja — Cooperación&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="509.4" cy="518.2" r="9.5" stroke="#ff4b89" stroke-width="1.4" fill="#ffb1c3"/><text class="etq" x="509.4" y="542.2" text-anchor="middle">Cámara de Comercio</text></g><g class="nodo" data-cod="A-011" data-x="538.1" data-y="587.5" data-territorio="nacional" data-cat="5" data-info="&lt;h3&gt;A-011 · Pontificia Universidad Javeriana&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;5&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;nacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (1)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-018&lt;/b&gt; media — Generación de conocimiento&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="538.1" cy="587.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="538.1" y="611.5" text-anchor="middle">Pontificia Universidad…</text></g><g class="nodo" data-cod="A-012" data-x="509.4" data-y="656.8" data-territorio="nacional" data-cat="5" data-info="&lt;h3&gt;A-012 · Econometría Consultores&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;5&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;nacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (1)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-019&lt;/b&gt; media — Generación de conocimiento&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="509.4" cy="656.8" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="509.4" y="680.8" text-anchor="middle">Econometría Consultores</text></g><g class="nodo" data-cod="A-013" data-x="701.7" data-y="477.5" data-territorio="nacional" data-cat="5" data-info="&lt;h3&gt;A-013 · SENA&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;publico&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;5&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;nacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="701.7" cy="477.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="701.7" y="501.5" text-anchor="middle">SENA</text></g><g class="nodo" data-cod="A-014" data-x="440.1" data-y="685.5" data-territorio="bogota" data-cat="5" data-info="&lt;h3&gt;A-014 · Universidad El Bosque&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;5&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;bogota&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="440.1" cy="685.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="440.1" y="709.5" text-anchor="middle">Universidad El Bosque</text></g><g class="nodo" data-cod="A-019" data-x="632.4" data-y="437.5" data-territorio="nacional" data-cat="7" data-info="&lt;h3&gt;A-019 · Sandbox Audiovisual Colombia 2023&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;publico&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;7&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;nacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (4)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-011&lt;/b&gt; baja — Formación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-013&lt;/b&gt; media — Cooperación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-014&lt;/b&gt; media — Financiación&lt;/li&gt;&lt;li&gt;&lt;b&gt;R-015&lt;/b&gt; media — Financiación&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="632.4" cy="437.5" r="9.5" stroke="#e2e2e2" stroke-width="1.4" fill="#e2e2e2"/><text class="etq" x="632.4" y="461.5" text-anchor="middle">Sandbox Audiovisual Co…</text></g><g class="nodo" data-cod="A-020" data-x="370.8" data-y="656.8" data-territorio="internacional" data-cat="3" data-info="&lt;h3&gt;A-020 · Netflix&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;instrumento o política&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;3&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;internacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (1)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-014&lt;/b&gt; media — Financiación&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><rect x="362.3" y="648.3" width="17" height="17" rx="3" stroke="#c8c6c5" stroke-width="1.4" fill="#4a4949"/><text class="etq" x="370.8" y="680.8" text-anchor="middle">Netflix</text></g><g class="nodo" data-cod="A-021" data-x="342.1" data-y="587.5" data-territorio="internacional" data-cat="7" data-info="&lt;h3&gt;A-021 · BID — Banco Interamericano de Desarrollo&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;instrumento o política&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;7&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;internacional&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;verificado&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (1)&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;R-015&lt;/b&gt; media — Financiación&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><rect x="333.6" y="579.0" width="17" height="17" rx="3" stroke="#c8c6c5" stroke-width="1.4" fill="#4a4949"/><text class="etq" x="342.1" y="611.5" text-anchor="middle">BID</text></g><g class="nodo" data-cod="A-023" data-x="378.3" data-y="335.5" data-territorio="cundinamarca" data-cat="🔴 ver CT-1" data-info="&lt;h3&gt;A-023 · Consejo Departamental de Cultura de Cundinamarca&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;tercero&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;🔴 ver CT-1&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;por-identificar&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="378.3" cy="335.5" r="9.5" stroke="#9a9a9a" stroke-width="1.4" fill="#1f1f1f" stroke-dasharray="4 3"/><text class="etq gris" x="378.3" y="359.5" text-anchor="middle">Consejo Departamental …</text></g><g class="nodo" data-cod="A-024" data-x="440.3" data-y="397.5" data-territorio="cundinamarca" data-cat="🔴 ver CT-1" data-info="&lt;h3&gt;A-024 · Consejos Municipales de Cultura&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;tercero&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;🔴 ver CT-1&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;por-identificar&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="440.3" cy="397.5" r="9.5" stroke="#9a9a9a" stroke-width="1.4" fill="#1f1f1f" stroke-dasharray="4 3"/><text class="etq gris" x="440.3" y="421.5" text-anchor="middle">Consejos Municipales d…</text></g><g class="nodo" data-cod="A-025" data-x="632.4" data-y="357.5" data-territorio="cundinamarca" data-cat="1" data-info="&lt;h3&gt;A-025 · Comisión fílmica local de Cundinamarca&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;&#x27;&gt;instrumento o política&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;publico&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;1&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;ausencia-documentada&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><rect x="623.9" y="349.0" width="17" height="17" rx="3" stroke="#ffb4ab" stroke-width="1.4" fill="#1f1f1f" stroke-dasharray="4 3"/><text class="etq gris" x="632.4" y="381.5" text-anchor="middle">Comisión fílmica local…</text></g><g class="nodo" data-cod="A-026" data-x="378.3" data-y="459.5" data-territorio="cundinamarca" data-cat="4" data-info="&lt;h3&gt;A-026 · Organizaciones culturales de redes de cine&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;tercero&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;4&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;por-identificar&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="378.3" cy="459.5" r="9.5" stroke="#9a9a9a" stroke-width="1.4" fill="#1f1f1f" stroke-dasharray="4 3"/><text class="etq gris" x="378.3" y="483.5" text-anchor="middle">Organizaciones cultura…</text></g><g class="nodo" data-cod="A-027" data-x="370.8" data-y="518.2" data-territorio="cundinamarca" data-cat="5" data-info="&lt;h3&gt;A-027 · Escuelas de cine y TV del departamento&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;privado&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;5&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;por-identificar&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="370.8" cy="518.2" r="9.5" stroke="#9a9a9a" stroke-width="1.4" fill="#1f1f1f" stroke-dasharray="4 3"/><text class="etq gris" x="370.8" y="542.2" text-anchor="middle">Escuelas de cine y TV …</text></g><g class="nodo" data-cod="A-028" data-x="316.3" data-y="397.5" data-territorio="cundinamarca" data-cat="4" data-info="&lt;h3&gt;A-028 · EPA — Soacha&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;tercero&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;4&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;por-identificar&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="316.3" cy="397.5" r="9.5" stroke="#9a9a9a" stroke-width="1.4" fill="#1f1f1f" stroke-dasharray="4 3"/><text class="etq gris" x="316.3" y="421.5" text-anchor="middle">EPA</text></g><g class="nodo" data-cod="A-029" data-x="639.9" data-y="587.5" data-territorio="cundinamarca" data-cat="6" data-info="&lt;h3&gt;A-029 · Comunidades y públicos del audiovisual&lt;/h3&gt;&lt;dl&gt;&lt;dt&gt;Persona&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;🔲 FALTA nombre y apellido&lt;/dd&gt;&lt;dt&gt;Esfera&lt;/dt&gt;&lt;dd&gt;necesidades&lt;/dd&gt;&lt;dt&gt;Categoría&lt;/dt&gt;&lt;dd&gt;6&lt;/dd&gt;&lt;dt&gt;Territorio&lt;/dt&gt;&lt;dd&gt;cundinamarca&lt;/dd&gt;&lt;dt&gt;Herramientas&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— ninguna enlazada.&lt;/dd&gt;&lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;por-identificar&lt;/dd&gt;&lt;dt&gt;Papel ✍️&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;dt&gt;Tu lectura&lt;/dt&gt;&lt;dd class=&#x27;vacio&#x27;&gt;— sin escribir.&lt;/dd&gt;&lt;/dl&gt;&lt;h4&gt;Relaciones (0)&lt;/h4&gt;&lt;ul&gt;&lt;li class=&#x27;vacio&#x27;&gt;Sin relaciones cargadas.&lt;/li&gt;&lt;/ul&gt;&lt;p class=&#x27;pista&#x27;&gt;Haz clic en el nodo para leer su ficha completa.&lt;/p&gt;"><circle cx="639.9" cy="587.5" r="9.5" stroke="#9a9a9a" stroke-width="1.4" fill="#1f1f1f" stroke-dasharray="4 3"/><text class="etq gris" x="639.9" y="611.5" text-anchor="middle">Comunidades y públicos…</text></g></svg></div>
+<aside class="panel" id="panel"><div class="idle"><b>Pasá el cursor</b> por un actor
+y acá aparece el detalle: qué es, con qué evidencia, y <b>tu lectura</b> si ya la escribiste en el
+archivo <code>.md</code>.<br><br>Círculo punteado gris = <b>por identificar</b>.<br>
+Círculo punteado rojo = <b>ausencia documentada</b>.<br><br><span id="pistaEditor"></span></div></aside>
+</div>
+<footer>
+<b>Cómo se lee.</b> Círculo = actor · cuadrado = instrumento o política · relleno amarillo = actor de Cundinamarca. Pasa el cursor sobre cualquier actor para ver su ficha, su evidencia y las relaciones que tiene cargadas.
+<br><br>
+<b>Fuente única, declarada.</b> El corpus base es autorreporte de Proimágenes/CPFC (2022-2025) más dos
+estudios contratados por ellos. Este mapa es <b>una primera hipótesis</b>, no un mapa definitivo.<br><br><b>Alcance de esta versión.</b> Se omiten 9 actores del corpus (A-005, A-006, A-007, A-008, A-015, A-016, A-017, A-018, A-022); siguen cargados en las matrices.
+<br><br>
+<b>Nada marcado <code>clase</code> o <code>material-docente</code> entra en esta proyección.</b>
+</footer>
+<script>
+var DATOS={"actores": [{"id": "A-001", "nombre": "Proimágenes Colombia", "esferas": ["privado", "publico"], "persona": "🔲", "cat": "1", "territorio": "nacional", "fuente": "[G22]-[G25]", "r1": "verificado", "lectura": "", "papel": "cumple el rol de **articulador, administrador financiero y promotor principal** del ecosistema audiovisual en el país. Como entidad mixta sin ánimo de lucro, funciona como el puente que conecta al sector público con la empresa privada y los creadores independientes.", "x": 570.9, "y": 492.5}, {"id": "A-002", "nombre": "CPFC — Comisión Fílmica Colombiana", "esferas": ["publico"], "persona": "🔲", "cat": "1", "territorio": "nacional", "fuente": "[G22]-[G25]", "r1": "verificado", "lectura": "", "papel": "**puente institucional y operativo fundamental** entre la industria audiovisual global y el territorio local. Su papel principal en el ecosistema es **dinamizar la economía, simplificar la burocracia y visibilizar los recursos locales** para convertir a una ciudad o país en un destino atractivo de rodaje.", "x": 701.7, "y": 317.5}, {"id": "A-003", "nombre": "Ministerio de Cultura", "esferas": ["publico"], "persona": "🔲", "cat": "2", "territorio": "nacional", "fuente": "[G24] p. 20", "r1": "verificado", "lectura": "", "papel": "**Ente rector y principal articulador del ecosistema cultural y creativo** del país. Su rol fundamental consiste en formular políticas públicas, diseñar mecanismos de financiación y garantizar los derechos culturales en los territorios.", "x": 771.0, "y": 357.5}, {"id": "A-004", "nombre": "Gobernación de Cundinamarca", "esferas": ["publico"], "persona": "🔲", "cat": "2", "territorio": "cundinamarca", "fuente": "[G24] p. 32", "r1": "verificado", "lectura": "", "papel": "", "x": 771.0, "y": 437.5}, {"id": "A-009", "nombre": "TIS Studios", "esferas": ["privado"], "persona": "🔲", "cat": "3", "territorio": "bogota", "fuente": "SC1 proyecto integrador", "r1": "verificado", "lectura": "", "papel": "", "x": 440.1, "y": 489.5}, {"id": "A-010", "nombre": "Cámara de Comercio (aliado local en Fusagasugá)", "esferas": ["privado"], "persona": "🔲", "cat": "3", "territorio": "cundinamarca", "fuente": "[G24] p. 32", "r1": "verificado", "lectura": "", "papel": "", "x": 509.4, "y": 518.2}, {"id": "A-011", "nombre": "Pontificia Universidad Javeriana", "esferas": ["privado"], "persona": "🔲", "cat": "5", "territorio": "nacional", "fuente": "[PUJ]", "r1": "verificado", "lectura": "", "papel": "", "x": 538.1, "y": 587.5}, {"id": "A-012", "nombre": "Econometría Consultores", "esferas": ["privado"], "persona": "🔲", "cat": "5", "territorio": "nacional", "fuente": "[ECO]", "r1": "verificado", "lectura": "", "papel": "", "x": 509.4, "y": 656.8}, {"id": "A-013", "nombre": "SENA", "esferas": ["publico"], "persona": "🔲", "cat": "5", "territorio": "nacional", "fuente": "[PUJ] p. 74", "r1": "verificado", "lectura": "", "papel": "", "x": 701.7, "y": 477.5}, {"id": "A-014", "nombre": "Universidad El Bosque", "esferas": ["privado"], "persona": "🔲", "cat": "5", "territorio": "bogota", "fuente": "matrícula de Luis, 2026-2", "r1": "verificado", "lectura": "", "papel": "", "x": 440.1, "y": 685.5}, {"id": "A-019", "nombre": "Sandbox Audiovisual Colombia 2023", "esferas": ["publico"], "persona": "🔲", "cat": "7", "territorio": "nacional", "fuente": "[PUJ] p. 79", "r1": "verificado", "lectura": "", "papel": "", "x": 632.4, "y": 437.5}, {"id": "A-020", "nombre": "Netflix", "esferas": ["privado"], "persona": "n-a", "cat": "3", "territorio": "internacional", "fuente": "[PUJ] p. 79", "r1": "verificado", "lectura": "", "papel": "", "x": 370.8, "y": 656.8}, {"id": "A-021", "nombre": "BID — Banco Interamericano de Desarrollo", "esferas": ["privado"], "persona": "n-a", "cat": "7", "territorio": "internacional", "fuente": "[PUJ] p. 79", "r1": "verificado", "lectura": "", "papel": "", "x": 342.1, "y": 587.5}, {"id": "A-023", "nombre": "Consejo Departamental de Cultura de Cundinamarca", "esferas": ["tercero"], "persona": "🔲", "cat": "🔴 ver CT-1", "territorio": "cundinamarca", "fuente": "🔲 ordenanza / Secretaría de Cultura", "r1": "por-identificar", "lectura": "", "papel": "", "x": 378.3, "y": 335.5}, {"id": "A-024", "nombre": "Consejos Municipales de Cultura", "esferas": ["tercero"], "persona": "🔲", "cat": "🔴 ver CT-1", "territorio": "cundinamarca", "fuente": "🔲 acuerdos municipales", "r1": "por-identificar", "lectura": "", "papel": "", "x": 440.3, "y": 397.5}, {"id": "A-025", "nombre": "Comisión fílmica local de Cundinamarca", "esferas": ["publico"], "persona": "n-a", "cat": "1", "territorio": "cundinamarca", "fuente": "🔴 [G25] p. 17 y [G24] pp. 20, 22 dicen que NO existe", "r1": "ausencia-documentada", "lectura": "", "papel": "", "x": 632.4, "y": 357.5}, {"id": "A-026", "nombre": "Organizaciones culturales de redes de cine", "esferas": ["tercero"], "persona": "🔲", "cat": "4", "territorio": "cundinamarca", "fuente": "🔲 mapeo territorial pendiente", "r1": "por-identificar", "lectura": "", "papel": "", "x": 378.3, "y": 459.5}, {"id": "A-027", "nombre": "Escuelas de cine y TV del departamento", "esferas": ["privado"], "persona": "🔲", "cat": "5", "territorio": "cundinamarca", "fuente": "🔲 oferta de formación pendiente", "r1": "por-identificar", "lectura": "", "papel": "", "x": 370.8, "y": 518.2}, {"id": "A-028", "nombre": "EPA — Soacha", "esferas": ["tercero"], "persona": "🔲", "cat": "4", "territorio": "cundinamarca", "fuente": "🔲 Luis: falta decir qué es", "r1": "por-identificar", "lectura": "", "papel": "", "x": 316.3, "y": 397.5}, {"id": "A-029", "nombre": "Comunidades y públicos del audiovisual", "esferas": ["necesidades"], "persona": "🔲", "cat": "6", "territorio": "cundinamarca", "fuente": "🔲 requiere trabajo de campo", "r1": "por-identificar", "lectura": "", "papel": "", "x": 639.9, "y": 587.5}], "actoresTodos": [{"id": "A-001", "nombre": "Proimágenes Colombia", "esferas": ["privado", "publico"]}, {"id": "A-002", "nombre": "CPFC — Comisión Fílmica Colombiana", "esferas": ["publico"]}, {"id": "A-003", "nombre": "Ministerio de Cultura", "esferas": ["publico"]}, {"id": "A-004", "nombre": "Gobernación de Cundinamarca", "esferas": ["publico"]}, {"id": "A-005", "nombre": "Alcaldía de Fusagasugá", "esferas": ["publico"]}, {"id": "A-006", "nombre": "Alcaldía de Arbeláez", "esferas": ["publico"]}, {"id": "A-007", "nombre": "Alcaldía de Pandi", "esferas": ["publico"]}, {"id": "A-008", "nombre": "Alcaldía de Girardot", "esferas": ["publico"]}, {"id": "A-009", "nombre": "TIS Studios", "esferas": ["privado"]}, {"id": "A-010", "nombre": "Cámara de Comercio (aliado local en Fusagasugá)", "esferas": ["privado"]}, {"id": "A-011", "nombre": "Pontificia Universidad Javeriana", "esferas": ["privado"]}, {"id": "A-012", "nombre": "Econometría Consultores", "esferas": ["privado"]}, {"id": "A-013", "nombre": "SENA", "esferas": ["publico"]}, {"id": "A-014", "nombre": "Universidad El Bosque", "esferas": ["privado"]}, {"id": "A-015", "nombre": "Ley 1556 de 2012", "esferas": ["publico"]}, {"id": "A-016", "nombre": "FFC — Fondo Fílmico Colombia", "esferas": ["publico"]}, {"id": "A-017", "nombre": "CINA — Certificado de Inversión Audiovisual", "esferas": ["publico"]}, {"id": "A-018", "nombre": "FDC — Fondo para el Desarrollo Cinematográfico", "esferas": ["publico"]}, {"id": "A-019", "nombre": "Sandbox Audiovisual Colombia 2023", "esferas": ["publico"]}, {"id": "A-020", "nombre": "Netflix", "esferas": ["privado"]}, {"id": "A-021", "nombre": "BID — Banco Interamericano de Desarrollo", "esferas": ["privado"]}, {"id": "A-022", "nombre": "Directorio de locaciones", "esferas": ["publico"]}, {"id": "A-023", "nombre": "Consejo Departamental de Cultura de Cundinamarca", "esferas": ["tercero"]}, {"id": "A-024", "nombre": "Consejos Municipales de Cultura", "esferas": ["tercero"]}, {"id": "A-025", "nombre": "Comisión fílmica local de Cundinamarca", "esferas": ["publico"]}, {"id": "A-026", "nombre": "Organizaciones culturales de redes de cine", "esferas": ["tercero"]}, {"id": "A-027", "nombre": "Escuelas de cine y TV del departamento", "esferas": ["privado"]}, {"id": "A-028", "nombre": "EPA — Soacha", "esferas": ["tercero"]}, {"id": "A-029", "nombre": "Comunidades y públicos del audiovisual", "esferas": ["necesidades"]}], "relaciones": [{"id": "R-001", "de": "A-002", "a": "A-004", "cat": "C", "catNombre": "Cooperación", "dir": "⊘", "intens": "nula", "que": "Cundinamarca no tiene equipo institucional que atienda rodajes: no está entre los 6 territorios que sí lo tienen en 2025", "evidencia": "[G25] p. 17", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-002", "de": "A-004", "a": "A-015", "cat": "P", "catNombre": "Producción", "dir": "⊘", "intens": "nula", "que": "Cundinamarca no tiene Permiso Unificado de Filmación ni acto administrativo equivalente. Los tres citados son Cartagena, Honda y Cali", "evidencia": "[G25] p. 18", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-003", "de": "A-002", "a": "A-004", "cat": "C", "catNombre": "Cooperación", "dir": "⊘", "intens": "nula", "que": "No recibió asesoría legal para crear comisión fílmica (4 regiones sí) ni asesoría de plan de trabajo (7 regiones sí)", "evidencia": "[G24] pp. 20, 22", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-004", "de": "A-022", "a": "A-004", "cat": "CI", "catNombre": "Circulación", "dir": "⊘", "intens": "nula", "que": "No está en las fases 3 ni 4 del Directorio de locaciones, ni entre los departamentos con las 348 nuevas locaciones de 2025. Sí figura en el catálogo consolidado de 22 departamentos", "evidencia": "[G24] pp. 23-25 · [G25] p. 26", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-005", "de": "A-002", "a": "A-004", "cat": "CI", "catNombre": "Circulación", "dir": "⊘", "intens": "nula", "que": "Ningún viaje de familiarización, nacional ni internacional, y no fue sede de los talleres de la Ley 1556", "evidencia": "[G25] pp. 20-23", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-006", "de": "A-002", "a": "A-004", "cat": "GC", "catNombre": "Generación de conocimiento", "dir": "⊘", "intens": "nula", "que": "El informe de gestión 2022 no menciona Cundinamarca ni una vez en 24 páginas. Proxies sin definir: \"Bogotá-Región\", \"Sabana de Bogotá\"", "evidencia": "[G22] pp. 3, 20", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-007", "de": "A-002", "a": "A-005", "cat": "FO", "catNombre": "Formación", "dir": "→", "intens": "media", "que": "Formación técnica de base en 2024, en Fusagasugá, Arbeláez, Pandi y Girardot", "evidencia": "[G24] pp. 23, 32, 35-36", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-008", "de": "A-002", "a": "A-006", "cat": "FO", "catNombre": "Formación", "dir": "→", "intens": "media", "que": "Formación técnica de base 2024", "evidencia": "[G24] pp. 35-36", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-009", "de": "A-002", "a": "A-007", "cat": "FO", "catNombre": "Formación", "dir": "→", "intens": "media", "que": "Formación técnica de base 2024", "evidencia": "[G24] pp. 35-36", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-010", "de": "A-002", "a": "A-008", "cat": "FO", "catNombre": "Formación", "dir": "→", "intens": "media", "que": "Formación técnica de base 2024", "evidencia": "[G24] pp. 35-36", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-011", "de": "A-019", "a": "A-004", "cat": "FO", "catNombre": "Formación", "dir": "→", "intens": "baja", "que": "Cundinamarca es uno de los seis departamentos del Sandbox Audiovisual Colombia 2023 (~1.500 participantes en la primera fase)", "evidencia": "[PUJ] p. 79", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-012", "de": "A-002", "a": "A-010", "cat": "C", "catNombre": "Cooperación", "dir": "→", "intens": "baja", "que": "La Cámara de Comercio figura como aliado local en Fusagasugá", "evidencia": "[G24] p. 32", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-013", "de": "A-003", "a": "A-019", "cat": "C", "catNombre": "Cooperación", "dir": "→", "intens": "media", "que": "El Sandbox es un programa MinCultura-Netflix-BID", "evidencia": "[PUJ] p. 79", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-014", "de": "A-020", "a": "A-019", "cat": "F", "catNombre": "Financiación", "dir": "→", "intens": "media", "que": "Netflix como socio financiador del Sandbox", "evidencia": "[PUJ] p. 79", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-015", "de": "A-021", "a": "A-019", "cat": "F", "catNombre": "Financiación", "dir": "→", "intens": "media", "que": "BID como socio financiador del Sandbox", "evidencia": "[PUJ] p. 79", "r1": "verificado", "lectura": "", "valido": "🔲"}, {"id": "R-016", "de": "A-001", "a": "A-016", "cat": "F", "catNombre": "Financiación", "dir": "→", "intens": "alta", "que": "Proimágenes administra el FFC: rebate del 40 % en servicios cinematográficos y 20 % en hotelería, alimentación y transporte", "evidencia": "Ley 1556 — 🔲 PI-012 pendiente", "r1": "sin-verificar", "lectura": "", "valido": "🔲"}, {"id": "R-017", "de": "A-001", "a": "A-017", "cat": "F", "catNombre": "Financiación", "dir": "→", "intens": "alta", "que": "Proimágenes administra el CINA", "evidencia": "[ECO] — norma de creación 🔲 PI-016", "r1": "sin-verificar", "lectura": "", "valido": "🔲"}, {"id": "R-018", "de": "A-011", "a": "A-001", "cat": "GC", "catNombre": "Generación de conocimiento", "dir": "→", "intens": "media", "que": "La Javeriana produjo el diagnóstico del Plan de Formación CINA, contratada por Proimágenes", "evidencia": "[PUJ] — 🔲 falta la página", "r1": "sin-verificar", "lectura": "", "valido": "🔲"}, {"id": "R-019", "de": "A-012", "a": "A-001", "cat": "GC", "catNombre": "Generación de conocimiento", "dir": "→", "intens": "media", "que": "Econometría evaluó los impactos del incentivo CINA, contratada por Proimágenes", "evidencia": "[ECO] — 🔲 falta la página", "r1": "sin-verificar", "lectura": "", "valido": "🔲"}], "categorias": [{"cod": "F", "nombre": "Financiación"}, {"cod": "C", "nombre": "Cooperación"}, {"cod": "P", "nombre": "Producción"}, {"cod": "FO", "nombre": "Formación"}, {"cod": "CI", "nombre": "Circulación"}, {"cod": "GC", "nombre": "Generación de conocimiento"}, {"cod": "L", "nombre": "Legitimación"}, {"cod": "PA", "nombre": "Participación"}, {"cod": "T", "nombre": "Tensiones"}, {"cod": "D", "nombre": "Dependencias"}, {"cod": "V", "nombre": "Vacíos"}, {"cod": "N", "nombre": "Necesidades"}], "cat7": [{"n": "1", "nombre": "Actores e instituciones relevantes"}, {"n": "2", "nombre": "Sector público"}, {"n": "3", "nombre": "Sector privado / productivo"}, {"n": "4", "nombre": "Organizaciones sociales, colectivos y tercer sector"}, {"n": "5", "nombre": "Academia y actores de generación de conocimiento"}, {"n": "6", "nombre": "Comunidades y públicos"}, {"n": "7", "nombre": "Políticas e instrumentos de financiación o fomento"}], "herramientas": [{"id": "H-001", "archivo": "h-001-ley-1556-de-2012.md", "nombre": "Ley 1556 de 2012", "que": "Ley que fomenta el rodaje en Colombia mediante **dos incentivos**: el **FFC** (Fondo Fílmico Colombia, contraprestación en efectivo, en operación desde 2013 — [G25] p. 2) y el **CINA** (Certificado de Inversión Audiovisual, desde junio de 2020 — [G22] p. 2). Su órgano directivo es el **CPFC** ([G24] p. 12) y la secretaría técnica la lleva Proimágenes ([G22] p. 11)", "objetivo": "Posicionar a Colombia como destino de rodaje — \"hub\" de producción audiovisual ([G22] p. 3). ✍️ Lo que la ley declara como su objeto: 🔲 por llenar (PI-012)", "poblacion": "Productoras que ruedan o posproducen en Colombia: reembolso de **hasta 40 %** en servicios cinematográficos vía FFC ([PUJ] p. 5). El propio informe reconoce **concentración en Bogotá y Bogotá-Región** y llama a descentralizar ([G22] p. 3)", "indicadores": "**Sí, anuales y con cifras** — informes de gestión del CPFC 2022-2025: 72 proyectos CINA y $1,7 billones de gasto (jun-2020 a dic-2022) y 47 proyectos FFC por $278 mil millones ([G22] p. 2); 165 proyectos CINA y más de $3,3 billones a dic-2025 ([G25] p. 2); tablas de ejecución presupuestal y CINA por proyecto ([G22] pp. 5, 7, 8); 37.992 noches de hotel y 1.756 tiquetes aéreos ([G22] p. 9). El FFC **agotó sus recursos en septiembre de 2024** ([G24] p. 3). **No territorializan**: con ellos no se puede saber cuánto llegó a Cundinamarca (ficha [G24], §Consecuencia para la tesis)", "fuente": "[G22] pp. 2-11 · [G24] pp. 3, 12 · [G25] p. 2 · [PUJ] p. 5", "r1": "verificado", "actores": ["A-001", "A-002", "A-003"]}], "territorios": ["cundinamarca", "bogota", "nacional", "internacional"], "esferas": [{"slug": "patrimonio", "nombre": "Patrimonio cultural", "color": "#d94f5c", "cx": 540.0, "cy": 280.0, "r": 210}, {"slug": "publico", "nombre": "Sector publico", "color": "#5b6bbf", "cx": 701.7, "cy": 397.5, "r": 210}, {"slug": "necesidades", "nombre": "Necesidades sociales", "color": "#4da37a", "cx": 639.9, "cy": 587.5, "r": 210}, {"slug": "privado", "nombre": "Sector privado", "color": "#e08a3c", "cx": 440.1, "cy": 587.5, "r": 210}, {"slug": "tercero", "nombre": "Tercer sector", "color": "#8d7a63", "cx": 378.3, "cy": 397.5, "r": 210}], "ocultos": ["A-005", "A-006", "A-007", "A-008", "A-015", "A-016", "A-017", "A-018", "A-022"]};
+var PUBLICO=true;
+var svg=document.querySelector('svg');
+var panel=document.getElementById('panel');
+var reposo=panel.innerHTML;
+var editor=false, seleccion=null, pendientes=[], posActual={};
+var porId={}, porIdTodos={};
+DATOS.actores.forEach(function(a){porId[a.id]=a;posActual[a.id]={x:a.x,y:a.y};});
+DATOS.actoresTodos.forEach(function(a){porIdTodos[a.id]=a;});
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(id){return document.getElementById(id);}
+function estado(msg,cls){var e=$('estado');e.textContent=msg||'';e.className=cls||'';}
+
+/* ---------- vista (hover) ---------- */
+function enlazar(el){
+ el.addEventListener('mouseenter',function(){if(seleccion)return;var d=el.getAttribute('data-info');if(d)panel.innerHTML=d;});
+}
+document.querySelectorAll('.nodo,.rel').forEach(enlazar);
+document.querySelector('.wrap').addEventListener('mouseleave',function(){if(!seleccion)panel.innerHTML=reposo;});
+var offs={};
+function pintar(){
+ document.querySelectorAll('.rel').forEach(function(l){var c=l.getAttribute('data-cat');l.classList.toggle('oculto',!!offs[c]);});
+ document.querySelectorAll('.lg[data-cat]').forEach(function(b){b.classList.toggle('off',!!offs[b.getAttribute('data-cat')]);});
+}
+document.querySelectorAll('.lg[data-cat]').forEach(function(b){b.onclick=function(){var c=b.getAttribute('data-cat');offs[c]=!offs[c];pintar();};});
+$('reset').onclick=function(){offs={};pintar();document.querySelectorAll('.nodo').forEach(function(n){n.classList.remove('oculto');});};
+$('soloCund').onclick=function(){document.querySelectorAll('.nodo').forEach(function(n){n.classList.toggle('oculto',n.getAttribute('data-territorio')!=='cundinamarca');});};
+var btnVac=$('soloVac');
+if(btnVac){btnVac.onclick=function(){document.querySelectorAll('.rel').forEach(function(l){l.classList.toggle('oculto',!l.classList.contains('ausente'));});};}
+
+/* ---------- pendientes (nada se escribe hasta Guardar) ---------- */
+function accion(obj,clave){
+ obj.clave=clave;
+ var i=pendientes.findIndex(function(p){return p.clave===clave;});
+ if(i>=0)pendientes[i]=obj;else pendientes.push(obj);
+ refrescarPendientes();
+}
+function refrescarPendientes(){
+ var n=pendientes.length;
+ $('guardar').textContent=n?'Guardar ('+n+')':'Guardar';
+ $('guardar').disabled=!n;$('descartar').disabled=!n;
+ $('publicar').disabled=!editor||!!n;$('publicar').title=n?'Guarda primero: hay cambios sin guardar':'Exporta el mapa en solo lectura al repo web y lo publica';
+ document.querySelectorAll('.nodo').forEach(function(g){
+  var c=g.getAttribute('data-cod');
+  g.classList.toggle('pend',pendientes.some(function(p){return p.cod===c||p.de===c||p.a===c||p.actor===c;}));
+ });
+ if(n)estado(n+' cambio'+(n>1?'s':'')+' sin guardar','warn');else if(editor)estado('Editor listo — nada pendiente','ok');
+}
+window.addEventListener('beforeunload',function(e){if(pendientes.length){e.preventDefault();e.returnValue='';}});
+$('descartar').onclick=function(){if(pendientes.length&&confirm('¿Descartar '+pendientes.length+' cambio(s) sin guardar?'))location.reload();};
+$('publicar').onclick=function(){
+ if(pendientes.length)return;
+ estado('Publicando… (verifica, exporta y sube al repo web)');$('publicar').disabled=true;
+ fetch('/publicar',{method:'POST'}).then(function(r){return r.json();}).then(function(res){
+  estado(res.ok?'✅ '+res.resumen:'⚠️ '+res.error,res.ok?'ok':'warn');$('publicar').disabled=false;
+  if(!res.ok)alert('No se publicó:\n\n'+res.error+(res.salida?'\n\n'+res.salida:''));
+ }).catch(function(e){estado('⚠️ no se pudo publicar: '+e,'warn');$('publicar').disabled=false;});
+};
+$('guardar').onclick=function(){
+ if(!pendientes.length)return;
+ estado('Guardando…');$('guardar').disabled=true;
+ fetch('/guardar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acciones:pendientes})})
+ .then(function(r){return r.json();}).then(function(res){
+  if(res.ok){pendientes=[];try{sessionStorage.setItem('eco-msg',res.resumen||'Guardado.');}catch(e){}location.reload();}
+  else{estado('⚠️ '+res.error,'warn');$('guardar').disabled=false;alert('No se guardó:\n\n'+res.error);}
+ }).catch(function(e){estado('⚠️ no se pudo guardar: '+e,'warn');$('guardar').disabled=false;});
+};
+
+/* ---------- seleccion y edicion de ficha ---------- */
+function seleccionar(cod){
+ seleccion=cod;
+ document.querySelectorAll('.nodo').forEach(function(g){g.classList.toggle('sel',g.getAttribute('data-cod')===cod);});
+ if(editor)renderSeleccion();else renderLectura();
+}
+/* ---------- vista de lectura (version publicada o archivo suelto): se navega, no se edita ---------- */
+function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+function renderLectura(){
+ var a=porId[seleccion];if(!a)return;
+ var rels=DATOS.relaciones.filter(function(r){return r.de===a.id||r.a===a.id;});
+ var hs=DATOS.herramientas.filter(function(x){return x.actores.indexOf(a.id)>=0;});
+ var h='<div class="cab"><h3>'+esc(a.id)+' · '+esc(a.nombre)+'</h3><button class="lg" id="cerrarSel" title="cerrar">×</button></div>';
+ h+='<dl><dt>Esfera</dt><dd>'+esc(a.esferas.join(', ')||'—')+'</dd><dt>Territorio</dt><dd>'+esc(a.territorio)+'</dd><dt>Estado</dt><dd>'+esc(a.r1)+'</dd></dl>';
+ h+='<h4>Papel en el ecosistema</h4>'+(a.papel?'<p>'+md(a.papel)+'</p>':'<p class="pista">— sin escribir todavía.</p>');
+ if(a.lectura)h+='<h4>Lectura de Luis</h4><p>'+md(a.lectura)+'</p>';
+ h+='<h4>Herramientas ('+hs.length+')</h4><ul>'+(hs.map(function(x){return '<li><a href="#" class="herrVer" data-id="'+esc(x.id)+'"><b>'+esc(x.id)+'</b> '+esc(x.nombre)+'</a>'+(x.r1!=='verificado'?' <span class="sv">[SIN VERIFICAR]</span>':'')+'</li>';}).join('')||'<li class="vacio">Ninguna enlazada.</li>')+'</ul>';
+ h+='<h4>Relaciones ('+rels.length+')</h4><ul>'+(rels.map(function(r){var otro=r.de===a.id?r.a:r.de;var o=porIdTodos[otro];return '<li><a href="#" class="relVer" data-id="'+esc(r.id)+'"><b>'+esc(r.id)+'</b></a> '+esc(r.catNombre)+' '+esc(r.dir||'🔲')+' '+esc(o?o.nombre:otro)+(r.r1!=='verificado'?' <span class="sv">[SIN VERIFICAR]</span>':'')+'</li>';}).join('')||'<li class="vacio">Sin relaciones cargadas.</li>')+'</ul>';
+ panel.innerHTML=h;
+ $('cerrarSel').onclick=cerrarSeleccion;
+ panel.querySelectorAll('.herrVer').forEach(function(x){x.onclick=function(ev){ev.preventDefault();verHerramientaLectura(x.getAttribute('data-id'));};});
+ panel.querySelectorAll('.relVer').forEach(function(x){x.onclick=function(ev){ev.preventDefault();verRelacionLectura(x.getAttribute('data-id'));};});
+}
+function verHerramientaLectura(id){
+ var x=DATOS.herramientas.find(function(q){return q.id===id;});if(!x)return;
+ var h='<div class="cab"><h3>🧰 '+esc(x.id)+' · '+esc(x.nombre)+'</h3><button class="lg" id="volverSel">← actor</button></div>';
+ [['que','Qué es'],['objetivo','Objetivo'],['poblacion','Población beneficiada'],['indicadores','Indicadores y registros']].forEach(function(f){h+='<h4>'+f[1]+'</h4><p>'+md(x[f[0]]||'🔲 por llenar')+'</p>';});
+ h+='<dl><dt>Fuente</dt><dd>'+esc(x.fuente||'🔲')+'</dd><dt>Estado R1</dt><dd>'+esc(x.r1)+'</dd></dl>';
+ h+='<h4>Actores que trabajan con ella ('+x.actores.length+')</h4><ul>'+(x.actores.map(function(c){var o=porIdTodos[c];return '<li>'+(porId[c]?'<a href="#" class="actVer" data-id="'+esc(c)+'">':'')+esc(c)+' · '+esc(o?o.nombre:c)+(porId[c]?'</a>':'')+'</li>';}).join('')||'<li class="vacio">Ninguno.</li>')+'</ul>';
+ panel.innerHTML=h;
+ $('volverSel').onclick=function(){if(seleccion)renderLectura();else cerrarSeleccion();};
+ panel.querySelectorAll('.actVer').forEach(function(el){el.onclick=function(ev){ev.preventDefault();seleccionar(el.getAttribute('data-id'));};});
+}
+function verRelacionLectura(id){
+ var r=DATOS.relaciones.find(function(q){return q.id===id;});if(!r)return;
+ var A=porIdTodos[r.de],B=porIdTodos[r.a];
+ var h='<div class="cab"><h3>'+esc(r.id)+' · '+esc(r.catNombre)+'</h3><button class="lg" id="volverSel">← actor</button></div>';
+ h+='<div class="ruta">'+esc(A?A.nombre:r.de)+' <b>'+esc(r.dir||'🔲')+'</b> '+esc(B?B.nombre:r.a)+(r.dir==='⊘'?' — <b>este flujo no existe</b>':'')+'</div>';
+ h+='<p>'+md(r.que||'🔲 por llenar')+'</p>';
+ h+='<dl><dt>Evidencia</dt><dd>'+esc(r.evidencia||'🔲')+'</dd><dt>Estado R1</dt><dd>'+esc(r.r1)+'</dd><dt>Intensidad</dt><dd>'+esc(r.intens||'🔲')+'</dd>'+(r.lectura?'<dt>Lectura de Luis</dt><dd>'+md(r.lectura)+'</dd>':'')+'<dt>Validada</dt><dd>'+esc(r.valido||'🔲')+'</dd></dl>';
+ panel.innerHTML=h;
+ $('volverSel').onclick=function(){if(seleccion)renderLectura();else cerrarSeleccion();};
+}
+function cerrarSeleccion(){seleccion=null;document.querySelectorAll('.nodo.sel').forEach(function(g){g.classList.remove('sel');});panel.innerHTML=reposo;pistaEditor();}
+function renderSeleccion(){
+ var a=porId[seleccion];if(!a)return;
+ var rels=DATOS.relaciones.filter(function(r){return r.de===a.id||r.a===a.id;});
+ var h='<div class="cab"><h3>'+esc(a.id)+' · '+esc(a.nombre)+'</h3><button class="lg" id="cerrarSel" title="cerrar">×</button></div>';
+ h+='<dl><dt>Esfera</dt><dd>'+DATOS.esferas.map(function(e){return '<label><input type="checkbox" class="fEsf" value="'+esc(e.slug)+'"'+(a.esferas.indexOf(e.slug)>=0?' checked':'')+'> '+esc(e.nombre)+'</label>';}).join('<br>')+'</dd>';
+ h+='<dt>Territorio</dt><dd>'+esc(a.territorio)+'</dd><dt>Estado</dt><dd>'+esc(a.r1)+'</dd></dl>';
+ h+='<h4>Papel en el ecosistema ✍️</h4><textarea id="fPapel" rows="5" placeholder="Tuyo. Se guarda en esferas/'+esc(a.esferas[0]||'…')+'.md">'+esc(a.papel)+'</textarea>';
+ h+='<h4>Mi lectura ✍️</h4><textarea id="fLectura" rows="3" placeholder="Tuya. Se guarda en ACTORES.md">'+esc(a.lectura)+'</textarea>';
+ var hs=DATOS.herramientas.filter(function(x){return x.actores.indexOf(a.id)>=0;});
+ var libres=DATOS.herramientas.filter(function(x){return x.actores.indexOf(a.id)<0;});
+ h+='<h4>Herramientas ('+hs.length+')</h4><ul>'+(hs.map(function(x){return '<li><a href="#" class="herrVer" data-id="'+esc(x.id)+'"><b>'+esc(x.id)+'</b> '+esc(x.nombre)+'</a>'+(x.r1!=='verificado'?' <span class="sv">[SIN VERIFICAR]</span>':'')+'</li>';}).join('')||'<li class="vacio">Sin herramientas enlazadas.</li>')+'</ul>';
+ h+='<div class="acc"><select id="herrSel"><option value="">— enlazar una herramienta —</option>'+libres.map(function(x){return '<option value="'+esc(x.id)+'">'+esc(x.id+' · '+x.nombre)+'</option>';}).join('')+'<option value="__nueva__">+ nueva herramienta…</option></select></div><div id="herrNuevaCaja"></div>';
+ h+='<h4>Relaciones ('+rels.length+')</h4><ul>'+(rels.map(function(r){
+   var otro=r.de===a.id?r.a:r.de;var o=porIdTodos[otro];
+   return '<li>'+(r.pendiente?'<span class="pend">(sin guardar)</span> ':'<a href="#" class="relEd" data-id="'+esc(r.id)+'"><b>'+esc(r.id)+'</b></a> ')+esc(r.catNombre)+' '+esc(r.dir||'🔲')+' '+esc(o?o.nombre:otro)+(r.r1!=='verificado'?' <span class="sv">[SIN VERIFICAR]</span>':'')+'</li>';
+  }).join('')||'<li class="vacio">Sin relaciones cargadas.</li>')+'</ul>';
+ h+='<div class="acc"><button class="lg" id="btnRel">+ Relación</button><button class="lg peligro" id="btnDel">Eliminar actor</button></div>';
+ panel.innerHTML=h;
+ $('cerrarSel').onclick=cerrarSeleccion;
+ panel.querySelectorAll('.fEsf').forEach(function(cb){cb.onchange=function(){
+  var sel=Array.prototype.slice.call(panel.querySelectorAll('.fEsf:checked')).map(function(x){return x.value;});
+  if(!sel.length){cb.checked=true;return;}
+  a.esferas=sel;accion({tipo:'esfera',cod:a.id,esferas:sel},'esfera:'+a.id);
+ };});
+ $('btnDel').onclick=function(){
+  if(this.getAttribute('data-armado')){borrarActor(a.id);return;}
+  this.setAttribute('data-armado','1');this.classList.add('rojo');
+  this.textContent='¿Seguro? Eliminar '+a.id+(rels.length?' y sus '+rels.length+' relación(es)':'');
+ };
+ $('fPapel').addEventListener('input',function(){a.papel=this.value;accion({tipo:'papel',cod:a.id,texto:this.value},'papel:'+a.id);});
+ $('fLectura').addEventListener('input',function(){a.lectura=this.value;accion({tipo:'lectura',cod:a.id,texto:this.value},'lectura:'+a.id);});
+ $('btnRel').onclick=function(){formRel(null);};
+ panel.querySelectorAll('.herrVer').forEach(function(x){x.onclick=function(ev){ev.preventDefault();verHerramienta(x.getAttribute('data-id'));};});
+ $('herrSel').onchange=function(){
+  var v=this.value;if(!v)return;
+  if(v==='__nueva__'){
+   $('herrNuevaCaja').innerHTML='<div class="acc"><input type="text" id="herrNombre" placeholder="nombre de la herramienta"><button class="lg primario" id="herrCrear">Crear y enlazar</button></div>';
+   $('herrNombre').focus();
+   $('herrCrear').onclick=function(){
+    var nombre=$('herrNombre').value.trim();if(!nombre){alert('Ponle nombre.');return;}
+    if(DATOS.herramientas.some(function(x){return x.nombre.toLowerCase()===nombre.toLowerCase();})){alert('Ya existe una herramienta con ese nombre: enlázala desde la lista.');return;}
+    var nueva={id:'H-nueva-'+Date.now(),pendiente:true,nombre:nombre,que:'',objetivo:'',poblacion:'',indicadores:'',fuente:'',r1:'sin-verificar',actores:[a.id]};
+    DATOS.herramientas.push(nueva);
+    accion({tipo:'herr_nueva',nombre:nombre,actor:a.id},'herr_nueva:'+nombre.toLowerCase());
+    renderSeleccion();
+   };
+   return;
+  }
+  var x=DATOS.herramientas.find(function(q){return q.id===v;});if(!x)return;
+  x.actores.push(a.id);accion({tipo:'herr_vincular',id:x.id,actor:a.id},'herr_vinculo:'+x.id+':'+a.id);
+  renderSeleccion();
+ };
+ panel.querySelectorAll('.relEd').forEach(function(x){x.onclick=function(ev){ev.preventDefault();var r=DATOS.relaciones.find(function(q){return q.id===x.getAttribute('data-id');});if(r)formRel(r);};});
+}
+
+/* ---------- actor: crear / eliminar ---------- */
+function borrarActor(cod){
+ var a=porId[cod];if(!a)return;
+ pendientes=pendientes.filter(function(p){return !(p.cod===cod||p.de===cod||p.a===cod);});
+ accion({tipo:'actor_borrar',cod:cod},'actor_borrar:'+cod);
+ var g=document.querySelector('.nodo[data-cod="'+cod+'"]');if(g)g.classList.add('oculto');
+ DATOS.relaciones=DATOS.relaciones.filter(function(r){return r.de!==cod&&r.a!==cod;});
+ DATOS.actoresTodos=DATOS.actoresTodos.filter(function(x){return x.id!==cod;});
+ delete porId[cod];delete porIdTodos[cod];
+ cerrarSeleccion();
+ estado(a.nombre+' se eliminará al Guardar (su página pasa a actores/_archivo/)','warn');
+}
+function formActor(){
+ seleccion=null;document.querySelectorAll('.nodo.sel').forEach(function(g){g.classList.remove('sel');});
+ var esf=DATOS.esferas.map(function(e){return '<label><input type="checkbox" name="nEsf" value="'+esc(e.slug)+'"> '+esc(e.nombre)+'</label>';}).join('<br>');
+ var cat7='<option value="">🔲 sin asignar</option>'+DATOS.cat7.map(function(c){return '<option value="'+esc(c.n)+'">'+esc(c.n+' · '+c.nombre)+'</option>';}).join('');
+ var terr=DATOS.territorios.map(function(t){return '<option value="'+esc(t)+'"'+(t==='cundinamarca'?' selected':'')+'>'+esc(t)+'</option>';}).join('');
+ var h='<div class="cab"><h3>Nuevo actor</h3><button class="lg" id="cerrarSel" title="cerrar">×</button></div>';
+ h+='<dl><dt>Nombre *</dt><dd><input type="text" id="nNombre" placeholder="como quieres que aparezca"></dd>';
+ h+='<dt>Esferas *</dt><dd>'+esf+'</dd>';
+ h+='<dt>Tipo</dt><dd><label><input type="radio" name="nTipo" value="🔲" checked> organización (persona por identificar)</label><br><label><input type="radio" name="nTipo" value="n-a"> instrumento o política</label></dd>';
+ h+='<dt>Categoría</dt><dd><select id="nCat">'+cat7+'</select></dd>';
+ h+='<dt>Territorio</dt><dd><select id="nTerr">'+terr+'</select></dd>';
+ h+='<dt>Fuente</dt><dd><input type="text" id="nFuente" placeholder="[G24] p. 12"><div class="pista">sin página queda sin-verificar</div></dd>';
+ h+='<dt>Mi lectura ✍️</dt><dd><textarea id="nLec" rows="2"></textarea></dd></dl>';
+ h+='<div class="acc"><button class="lg primario" id="btnActorOk">Anotar actor</button></div>';
+ h+='<p class="pista">Aparece en el mapa al Guardar; después lo arrastras a donde quieras.</p>';
+ panel.innerHTML=h;
+ $('cerrarSel').onclick=cerrarSeleccion;
+ $('nNombre').focus();
+ $('btnActorOk').onclick=function(){
+  var nombre=$('nNombre').value.trim();
+  var esferas=Array.prototype.slice.call(panel.querySelectorAll('input[name=nEsf]:checked')).map(function(x){return x.value;});
+  if(!nombre){alert('Ponle nombre.');return;}
+  if(!esferas.length){alert('Elige al menos una esfera.');return;}
+  var tipo=panel.querySelector('input[name=nTipo]:checked').value;
+  accion({tipo:'actor_nuevo',nombre:nombre,esferas:esferas,persona:tipo,cat:$('nCat').value,territorio:$('nTerr').value,fuente:$('nFuente').value.trim(),lectura:$('nLec').value.trim()},'actor_nuevo:'+nombre.toLowerCase());
+  cerrarSeleccion();
+  estado('"'+nombre+'" se creará al Guardar','warn');
+ };
+}
+$('nuevoActor').onclick=formActor;
+
+/* ---------- herramienta: matriz de conocimiento ---------- */
+function verHerramienta(id){
+ var x=DATOS.herramientas.find(function(q){return q.id===id;});if(!x)return;
+ var h='<div class="cab"><h3>🧰 '+esc(x.id)+' · '+esc(x.nombre)+'</h3><button class="lg" id="volverSel">← ficha</button></div>';
+ h+='<p class="pista">Matriz de conocimiento — se guarda en <code>HERRAMIENTAS.md</code>'+(x.pendiente?' · <span class="pend">(sin guardar: los campos se habilitan después de Guardar)</span>':'')+'</p>';
+ [['que','Qué es'],['objetivo','Objetivo'],['poblacion','Población beneficiada'],['indicadores','Indicadores y registros']].forEach(function(f){
+  h+='<h4>'+f[1]+'</h4><textarea class="hCampo" data-campo="'+f[0]+'" rows="4"'+(x.pendiente?' disabled':'')+'>'+esc(x[f[0]])+'</textarea>';
+ });
+ h+='<h4>Fuente</h4><input type="text" class="hCampo" data-campo="fuente" placeholder="[G24] p. 12" value="'+esc(x.fuente)+'"'+(x.pendiente?' disabled':'')+'><div class="pista">estado R1: <b>'+esc(x.r1)+'</b> — con página queda verificado</div>';
+ h+='<h4>Actores que trabajan con ella ('+x.actores.length+')</h4><ul>'+(x.actores.map(function(c){var o=porIdTodos[c];return '<li>'+esc(c)+' · '+esc(o?o.nombre:c)+(x.pendiente?'':' <a href="#" class="herrQuitar" data-actor="'+esc(c)+'" title="desenlazar">×</a>')+'</li>';}).join('')||'<li class="vacio">Ninguno.</li>')+'</ul>';
+ panel.innerHTML=h;
+ $('volverSel').onclick=function(){if(seleccion)renderSeleccion();else cerrarSeleccion();};
+ panel.querySelectorAll('.hCampo').forEach(function(el){el.addEventListener('input',function(){
+  x[el.getAttribute('data-campo')]=el.value;
+  var campos={};panel.querySelectorAll('.hCampo').forEach(function(e2){campos[e2.getAttribute('data-campo')]=e2.value;});
+  accion({tipo:'herr_editar',id:x.id,campos:campos},'herr_editar:'+x.id);
+ });});
+ panel.querySelectorAll('.herrQuitar').forEach(function(el){el.onclick=function(ev){
+  ev.preventDefault();var c=el.getAttribute('data-actor');
+  x.actores=x.actores.filter(function(q){return q!==c;});
+  accion({tipo:'herr_desvincular',id:x.id,actor:c},'herr_vinculo:'+x.id+':'+c);
+  verHerramienta(x.id);
+ };});
+}
+
+/* ---------- relacion: crear / editar ---------- */
+function formRel(r){
+ var a=porId[seleccion];if(!a)return;
+ var otroSel=r?(r.de===a.id?r.a:r.de):'';
+ var ops='<option value="">— elige el otro actor —</option>';
+ DATOS.esferas.forEach(function(e){
+  var grupo=DATOS.actoresTodos.filter(function(x){return x.id!==a.id&&x.esferas.indexOf(e.slug)>=0;});
+  if(!grupo.length)return;
+  ops+='<optgroup label="'+esc(e.nombre)+'">'+grupo.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===otroSel?' selected':'')+'>'+esc(x.id+' · '+x.nombre)+(DATOS.ocultos.indexOf(x.id)>=0?' (oculto en el mapa)':'')+'</option>';}).join('')+'</optgroup>';
+ });
+ var sinEsf=DATOS.actoresTodos.filter(function(x){return x.id!==a.id&&!x.esferas.length;});
+ if(sinEsf.length)ops+='<optgroup label="Sin esfera">'+sinEsf.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===otroSel?' selected':'')+'>'+esc(x.id+' · '+x.nombre)+'</option>';}).join('')+'</optgroup>';
+ var cats='<option value="">— elige la categoría —</option>'+DATOS.categorias.map(function(c){return '<option value="'+esc(c.cod)+'"'+(r&&r.cat===c.cod?' selected':'')+'>'+esc(c.nombre)+(c.cod==='N'?' ✍️ (sin definir — PI-022)':'')+'</option>';}).join('');
+ function radios(n,vals,act){return vals.map(function(v){return '<label><input type="radio" name="'+n+'" value="'+esc(v)+'"'+(act===v?' checked':'')+'> '+esc(v)+'</label>';}).join(' ');}
+ var h='<div class="cab"><h3>'+(r?'Editar '+esc(r.id):'Nueva relación')+'</h3><button class="lg" id="volverSel">← ficha</button></div>';
+ h+='<dl><dt>De</dt><dd>'+esc(a.id+' · '+a.nombre)+'</dd>';
+ h+='<dt>A *</dt><dd><select id="rA"'+(r?' disabled':'')+'>'+ops+'</select></dd>';
+ h+='<dt>Categoría *</dt><dd><select id="rCat">'+cats+'</select></dd>';
+ h+='<dt>Dirección</dt><dd>'+radios('rDir',['→','←','↔','⊘'],r&&r.dir)+'<div class="pista">⊘ = no existe, y lo puedo probar</div></dd>';
+ h+='<dt>Intensidad</dt><dd>'+radios('rInt',['alta','media','baja','nula'],r&&r.intens)+'</dd>';
+ h+='<dt>Qué circula</dt><dd><input type="text" id="rQue" placeholder="una frase" value="'+esc(r?r.que:'')+'"></dd>';
+ h+='<dt>Evidencia</dt><dd><input type="text" id="rEv" placeholder="[G24] p. 12" value="'+esc(r?r.evidencia:'')+'"><div class="pista">sin página queda [SIN VERIFICAR] y no sale del vault</div></dd>';
+ h+='<dt>Mi lectura ✍️</dt><dd><textarea id="rLec" rows="2">'+esc(r?r.lectura:'')+'</textarea></dd>';
+ if(r)h+='<dt>¿Validada?</dt><dd><label><input type="checkbox" id="rVal"'+((r.valido||'').indexOf('✅')>=0?' checked':'')+'> ✅ validada por mí</label></dd>';
+ h+='</dl><div class="acc"><button class="lg primario" id="btnRelOk">'+(r?'Anotar cambios':'Anotar relación')+'</button></div>';
+ panel.innerHTML=h;
+ $('volverSel').onclick=renderSeleccion;
+ $('btnRelOk').onclick=function(){
+  var val=function(n){var x=panel.querySelector('input[name='+n+']:checked');return x?x.value:'';};
+  var cat=$('rCat').value;
+  var campos={cat:cat,dir:val('rDir'),intens:val('rInt'),que:$('rQue').value.trim(),evidencia:$('rEv').value.trim(),lectura:$('rLec').value.trim()};
+  if(!cat){alert('Elige la categoría.');return;}
+  if(r){
+   campos.valido=$('rVal').checked?'✅':'🔲';
+   Object.assign(r,{cat:cat,catNombre:(DATOS.categorias.find(function(c){return c.cod===cat;})||{}).nombre||cat,dir:campos.dir,intens:campos.intens,que:campos.que,evidencia:campos.evidencia,lectura:campos.lectura,valido:campos.valido});
+   r.r1=/\bpp?\.\s*\d/.test(campos.evidencia)?'verificado':'sin-verificar';
+   accion({tipo:'rel_editar',id:r.id,campos:campos,de:r.de,a:r.a},'rel_editar:'+r.id);
+  }else{
+   var otro=$('rA').value;if(!otro){alert('Elige el otro actor.');return;}
+   var dup=DATOS.relaciones.find(function(q){return q.cat===cat&&((q.de===a.id&&q.a===otro)||(q.de===otro&&q.a===a.id));});
+   if(dup){alert('Ya existe '+dup.id+' entre estos dos actores con esa categoría. Edítala desde la lista.');return;}
+   var nueva={id:'R-nueva',pendiente:true,de:a.id,a:otro,cat:cat,catNombre:(DATOS.categorias.find(function(c){return c.cod===cat;})||{}).nombre||cat,dir:campos.dir,intens:campos.intens,que:campos.que,evidencia:campos.evidencia,lectura:campos.lectura,valido:'🔲',r1:/\bpp?\.\s*\d/.test(campos.evidencia)?'verificado':'sin-verificar'};
+   DATOS.relaciones.push(nueva);
+   accion({tipo:'rel_nueva',de:a.id,a:otro,cat:cat,dir:campos.dir,intens:campos.intens,que:campos.que,evidencia:campos.evidencia,lectura:campos.lectura},'rel_nueva:'+a.id+':'+otro+':'+cat);
+  }
+  renderSeleccion();
+ };
+}
+
+/* ---------- arrastre ---------- */
+function ptSvg(ev){var p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
+document.querySelectorAll('.nodo').forEach(function(g){
+ var cod=g.getAttribute('data-cod'),x0=+g.getAttribute('data-x'),y0=+g.getAttribute('data-y'),arr=null;
+ function aplicar(){var p=posActual[cod];g.setAttribute('transform','translate('+(p.x-x0).toFixed(1)+','+(p.y-y0).toFixed(1)+')');}
+ g.addEventListener('pointerdown',function(ev){
+  if(!editor||ev.button!==0)return;ev.preventDefault();g.setPointerCapture(ev.pointerId);
+  var p=ptSvg(ev);arr={px:p.x,py:p.y,ox:posActual[cod].x,oy:posActual[cod].y,movido:false};g.classList.add('arr');
+ });
+ g.addEventListener('pointermove',function(ev){
+  if(!arr)return;var p=ptSvg(ev),dx=p.x-arr.px,dy=p.y-arr.py;
+  if(!arr.movido&&(Math.abs(dx)>3||Math.abs(dy)>3))arr.movido=true;
+  if(arr.movido){posActual[cod]={x:arr.ox+dx,y:arr.oy+dy};aplicar();}
+ });
+ function soltar(ev){
+  if(!arr)return;var a=arr;arr=null;g.classList.remove('arr');
+  if(!a.movido){if(editor)seleccionar(cod);return;}
+  var p=posActual[cod];p.x=Math.max(12,Math.min(1080-12,p.x));p.y=Math.max(12,Math.min(940-30,p.y));aplicar();
+  accion({tipo:'pos',cod:cod,x:+p.x.toFixed(1),y:+p.y.toFixed(1)},'pos:'+cod);
+  /* Soltarlo dentro de otro(s) circulo(s) cambia su esfera, sin preguntar (Luis, 2026-09-01).
+     Se corrige en la ficha si quedo mal, y nada se escribe hasta Guardar. */
+  var dentro=DATOS.esferas.filter(function(e){return Math.hypot(p.x-e.cx,p.y-e.cy)<=e.r;}).map(function(e){return e.slug;}).sort();
+  var actual=porId[cod].esferas.slice().sort();
+  if(dentro.length&&dentro.join(',')!==actual.join(',')){
+   porId[cod].esferas=dentro;accion({tipo:'esfera',cod:cod,esferas:dentro},'esfera:'+cod);
+   estado(porId[cod].nombre+' → '+dentro.join(', ')+' (sin guardar)','warn');
+  }
+  if(seleccion===cod)renderSeleccion();
+ }
+ g.addEventListener('pointerup',soltar);g.addEventListener('pointercancel',soltar);
+ g.addEventListener('click',function(ev){ev.preventDefault();if(!editor)seleccionar(cod);});
+});
+
+/* ---------- modo: editor si hay servidor, lectura si es archivo suelto ---------- */
+function pistaEditor(){var s=$('pistaEditor');if(!s)return;s.innerHTML=PUBLICO?'<b>Versión de consulta.</b> Haz clic en cualquier actor para leer su ficha, sus herramientas y sus relaciones, con su evidencia. Se actualiza cada vez que Luis publica desde su editor.':editor?'<b>Modo edición.</b> Clic en un nodo = ficha editable · arrastrar = mover (soltarlo en otro círculo = cambiar esfera) · <b>+ Actor</b> arriba · <b>Guardar</b> escribe en los <code>.md</code> · <b>Publicar</b> sube la versión de consulta.':'<b>Solo lectura.</b> Para editar, ejecuta <code>python3 scripts/ecosistema.py</code> y abre el enlace que imprime.';}
+if(PUBLICO){document.body.classList.add('publico');editor=false;pistaEditor();}
+else try{
+ fetch('/estado',{cache:'no-store'}).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(){
+  editor=true;document.body.classList.add('editor');pistaEditor();$('nuevoActor').disabled=false;$('publicar').disabled=false;
+  var m=null;try{m=sessionStorage.getItem('eco-msg');sessionStorage.removeItem('eco-msg');}catch(e){}
+  estado(m||'Editor listo — nada pendiente','ok');
+ }).catch(function(){editor=false;pistaEditor();estado('Solo lectura (archivo suelto)');});
+}catch(e){editor=false;pistaEditor();estado('Solo lectura (archivo suelto)');}
+</script></body></html>
